@@ -15,7 +15,7 @@ Grupo **MonkeyNerds**:
 
 ## Protótipo publicado
 
-_(colocar aqui o link do GitHub Pages)_
+**https://danielsouzag.github.io/ALERA-sprints/**
 
 ## Como executar
 
