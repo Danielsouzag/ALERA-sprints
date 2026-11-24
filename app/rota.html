@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="O caminho até o abrigo, evitando a rua alagada.">
+  <title>Rota segura · ALERA</title>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- TOPO DA TAREFA: "Voltar" + título, sem a navegação de baixo (tela só com o essencial) -->
+  <header class="rota__topo">
+    <a class="rota__voltar" href="index.html">
+      <svg class="rota__icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"/></svg>
+      Voltar
+    </a>
+    <p class="rota__titulo">Rota segura</p>
+    <input class="tema__controle visualmente-oculto" type="checkbox" id="tema" role="switch">
+      <label class="tema" for="tema">
+        <svg class="tema__icone tema__icone--lua" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="tema__icone tema__icone--sol" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <span class="visualmente-oculto">Tema escuro</span>
+      </label>
+  </header>
+
+  <main id="conteudo" class="rota">
+    <h1 class="visualmente-oculto">Rota segura até o abrigo</h1>
+    <div class="container rota__conteudo">
+      <div class="rota__mapa-caixa">
+      <!-- Tema só do mapa: o checkbox #mapa-tema inverte o mapa em relação ao tema do app -->
+      <input class="visualmente-oculto" type="checkbox" id="mapa-tema" role="switch">
+      <label class="mapa-tema" for="mapa-tema">
+        <svg class="mapa-tema__icone mapa-tema__icone--lua" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="mapa-tema__icone mapa-tema__icone--sol" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <span class="visualmente-oculto">Inverter cores do mapa</span>
+      </label>
+      <svg class="rota__mapa" viewBox="0 0 320 200" role="img" aria-label="Mapa: saia de casa, vire à direita na Rua da Paz, suba a Av. Exemplo até o abrigo. A Rua Exemplo está alagada.">
+        <line class="mapa__rua" x1="60" y1="0" x2="60" y2="200"/>
+        <line class="mapa__rua" x1="0" y1="150" x2="320" y2="150"/>
+        <line class="mapa__rua" x1="250" y1="0" x2="250" y2="200"/>
+        <line class="mapa__perigo" x1="0" y1="40" x2="320" y2="40"/>
+        <path class="mapa__caminho" d="M60 100 V150 H250 V110"/>
+        <circle class="mapa__voce" cx="60" cy="100" r="9"/>
+        <path class="mapa__abrigo" d="M238 98 L250 86 L262 98 V110 H238 Z"/>
+        <text class="mapa__rotulo" x="110" y="26">Rua Exemplo · alagada</text>
+        <text class="mapa__rotulo" x="100" y="176">Rua da Paz</text>
+        <text class="mapa__rotulo" x="274" y="120" text-anchor="middle" transform="rotate(-90 274 120)">Av. Exemplo</text>
+        <text class="mapa__rotulo" x="76" y="105">Você</text>
+        <text class="mapa__rotulo" x="230" y="104" text-anchor="end">Abrigo</text>
+      </svg>
+      </div>
+
+
+      <article class="rota__destino">
+        <h2 class="rota__nome">Escola Municipal Exemplo</h2>
+        <p class="rota__info"><strong class="rota__tempo">8 min a pé</strong> · 600 m · aberto agora</p>
+      </article>
+
+      <p class="rota__evitar">
+        <svg class="rota__icone" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+        ALERTA · Não passe pela Rua Exemplo: está alagada.
+      </p>
+
+      <ol class="rota__passos">
+        <li>Saia de casa e desça 50 m até a Rua da Paz.</li>
+        <li>Vire à direita na Rua da Paz e siga 300 m.</li>
+        <li>Vire à esquerda na Av. Exemplo e suba 250 m.</li>
+        <li>O abrigo fica no fim da quadra, portão azul.</li>
+      </ol>
+
+
+      <!-- FLUXO 1 · passo 5: escolher e salvar o abrigo. Card de abrigo = rádio:
+           o cartão inteiro é clicável; o fechado vem desativado. Sem escolher, o envio é bloqueado. -->
+      <form class="formulario" action="abrigo-salvo.html">
+        <fieldset>
+          <legend>Salve seu abrigo</legend>
+          <div class="abrigos">
+            <label class="abrigo">
+              <input type="radio" name="abrigo" required aria-describedby="abrigos-erro">
+              <span class="abrigo__nome">Escola Municipal Exemplo</span>
+              <span class="abrigo__info">600 m · 8 min a pé · aberto agora</span>
+            </label>
+            <label class="abrigo">
+              <input type="radio" name="abrigo" required aria-describedby="abrigos-erro">
+              <span class="abrigo__nome">Ginásio Poliesportivo</span>
+              <span class="abrigo__info">1,2 km · 15 min a pé · aberto agora</span>
+            </label>
+            <label class="abrigo">
+              <input type="radio" name="abrigo" disabled>
+              <span class="abrigo__nome">Centro Comunitário</span>
+              <span class="abrigo__info">900 m · fechado</span>
+            </label>
+          </div>
+          <p class="abrigos__erro" id="abrigos-erro">Escolha um abrigo para salvar.</p>
+        </fieldset>
+        <button class="botao" type="submit">Salvar este abrigo</button>
+      </form>
+
+      <div class="rota__acoes">
+        <a class="botao" href="https://www.google.com/maps/dir/?api=1&amp;destination=Escola+Municipal+Exemplo+Juiz+de+Fora&amp;travelmode=walking" target="_blank" rel="noopener">Abrir no Google Maps</a>
+        <a class="botao botao--secundario" href="tel:199">Ligar 199 · Defesa Civil</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
