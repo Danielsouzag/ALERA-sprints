@@ -1,0 +1,801 @@
+/* ALERA · site.css
+   Estilos do site/index.html. Só var(--token) do tokens.css. Mobile first. */
+
+/* Modo escuro: o botão sol/lua do topo marca o checkbox #tema (mesmo nome do app).
+   Os tokens do site passam a apontar para os --cor-escuro-* do tokens.css,
+   então todo o resto do CSS muda sozinho. As cores de risco não mudam. */
+:root:has(#tema:checked) {
+  color-scheme: dark;
+  --cor-primaria:    var(--cor-escuro-azul);
+  --cor-destaque:    var(--cor-escuro-destaque);
+  --cor-fundo:       var(--cor-escuro-fundo);
+  --cor-superficie:  var(--cor-escuro-superficie);
+  --cor-texto:       var(--cor-escuro-texto);
+  --cor-texto-suave: var(--cor-escuro-texto-suave);
+  --cor-borda:       var(--cor-escuro-borda);
+  --cor-erro:        var(--cor-escuro-erro);
+}
+
+/* No escuro o rodapé não fica azul claro nem some junto com o "Quem somos"
+   (que é cartão escuro): usa o azul do topo do app com texto claro (9,4:1) */
+:root:has(#tema:checked) .rodape,
+:root:has(#tema:checked) .rodape a,
+:root:has(#tema:checked) .rodape h2 {
+  color: var(--cor-escuro-texto);
+}
+
+:root:has(#tema:checked) .rodape {
+  background: var(--cor-escuro-azul-fundo);
+}
+
+/* No escuro a marca e o ícone do tema ficam brancos (texto claro do tema escuro) */
+:root:has(#tema:checked) .logo,
+:root:has(#tema:checked) .tema-botao {
+  color: var(--cor-escuro-texto);
+}
+
+/* Layout */
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--esp-4);
+}
+
+.secao {
+  padding: var(--esp-7) 0;
+}
+
+/* Foco visível em tudo que é clicável */
+a:focus-visible {
+  outline: none;
+  box-shadow: var(--foco);
+}
+
+/* Header */
+/* Header fixo: o botão "Testar o app" fica sempre a um toque */
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--cor-superficie);
+  box-shadow: var(--sombra-card);
+}
+
+/* Ao clicar na nav, o título da seção não fica escondido atrás do header */
+[id] {
+  scroll-margin-top: var(--esp-8);
+}
+
+.topo-conteudo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-4);
+  min-height: var(--esp-8);
+}
+
+.logo {
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-xl);
+  letter-spacing: .04em; /* igual à marca do app */
+  color: var(--cor-primaria);
+  text-decoration: none;
+}
+
+/* Logo (gota de pixels) ao lado do A.L.E.R.A, no header e no rodapé */
+.logo,
+.rodape-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-2);
+}
+
+.logo-icone {
+  width: var(--esp-6);
+  height: var(--esp-6);
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.nav-lista {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* No celular só o botão "Testar o app" fica no header; o resto está no rodapé */
+.nav-item {
+  display: none;
+}
+
+.nav-item a {
+  color: var(--cor-texto);
+  font-weight: var(--peso-forte);
+  text-decoration: none;
+}
+
+@media (min-width: 768px) {
+  .nav-item {
+    display: block;
+  }
+}
+
+/* Botão do modo escuro: lua no claro, sol no escuro */
+.topo-conteudo nav {
+  margin-left: auto;
+}
+
+.tema-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Igual ao botão do app: ícone de traço, sem borda, anel só no hover */
+.tema-botao {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--toque-min);
+  height: var(--toque-min);
+  border-radius: var(--raio-botao);
+  color: var(--cor-texto);
+  cursor: pointer;
+}
+
+.tema-botao:hover {
+  box-shadow: inset 0 0 0 2px var(--cor-texto);
+}
+
+.tema-input:focus-visible + .tema-botao {
+  box-shadow: var(--foco);
+}
+
+.tema-icone {
+  width: var(--esp-5);
+  height: var(--esp-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tema-icone-sol,
+.tema-input:checked + .tema-botao .tema-icone-lua {
+  display: none;
+}
+
+.tema-input:checked + .tema-botao .tema-icone-sol {
+  display: block;
+}
+
+/* Some da tela, mas o leitor de tela lê */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Botão */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--toque-min);
+  padding: var(--esp-3) var(--esp-5);
+  border: 2px solid var(--cor-primaria);
+  border-radius: var(--raio-botao);
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-forte);
+  font-size: var(--fs-md);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.botao-principal {
+  background: var(--cor-primaria);
+  color: var(--cor-superficie);
+}
+
+.botao-secundario {
+  background: transparent;
+  color: var(--cor-primaria);
+}
+
+/* Hero */
+.hero {
+  padding: var(--esp-8) 0 var(--esp-7);
+}
+
+.hero h1 {
+  font-size: var(--fs-3xl);
+  margin: 0 0 var(--esp-4);
+}
+
+.hero-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+  margin-top: var(--esp-5);
+}
+
+.sobretitulo {
+  margin: 0 0 var(--esp-2);
+  font-size: var(--fs-sm);
+  font-weight: var(--peso-forte);
+  color: var(--cor-texto-suave);
+}
+
+.hero-texto {
+  max-width: 60ch;
+  font-size: var(--fs-lg);
+}
+
+/* Hero: a foto ocupa o fundo inteiro e o texto fica num card por cima.
+   Foto e card dividem a mesma célula da grade; o card define a altura. */
+.hero-grade {
+  display: grid;
+}
+
+.hero-imagem,
+.hero-conteudo {
+  grid-area: 1 / 1;
+}
+
+.hero-imagem img {
+  height: 100%;
+}
+
+/* Card quase opaco: a foto aparece por trás,
+   mas as letras ficam sempre sobre um fundo claro (contraste garantido) */
+.hero-conteudo {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  margin: var(--esp-8) var(--esp-3) var(--esp-3);
+  padding: var(--esp-5);
+  background: color-mix(in srgb, var(--cor-fundo) 95%, transparent);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+}
+
+@media (min-width: 768px) {
+  .hero-grade {
+    aspect-ratio: 16 / 9;
+  }
+
+  .hero-conteudo {
+    align-self: center;
+    justify-self: start;
+    max-width: 60%;
+    margin: var(--esp-7);
+    padding: var(--esp-6);
+  }
+
+  /* Linhas curtas: o título quebra em poucas linhas e o texto em blocos curtos */
+  .hero h1 {
+    max-width: 16ch;
+  }
+
+  .hero-texto {
+    max-width: 42ch;
+  }
+}
+
+/* Imagens: nunca passam da largura da tela */
+figure {
+  margin: 0;
+}
+
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--raio-card);
+}
+
+/* O problema: 2 linhas de 2 cards e o 250 t centralizado embaixo,
+   com a mesma largura dos outros (metade da linha menos meio espaço) */
+@media (min-width: 768px) {
+  .numero-central {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - var(--esp-2));
+    box-sizing: border-box;
+  }
+}
+
+/* Seções */
+.secao h2 {
+  font-size: var(--fs-xl);
+  margin: 0 0 var(--esp-3);
+}
+
+.secao-clara {
+  background: var(--cor-superficie);
+}
+
+.secao-intro {
+  margin: 0 0 var(--esp-5);
+  color: var(--cor-texto-suave);
+}
+
+.subtitulo {
+  font-size: var(--fs-lg);
+  margin: var(--esp-6) 0 var(--esp-4);
+}
+
+/* Título dentro de uma subseção (ex.: os níveis dentro de "Como funciona") */
+.subtitulo-menor {
+  font-size: var(--fs-md);
+  margin: var(--esp-6) 0 var(--esp-3);
+}
+
+.nota {
+  font-size: var(--fs-sm);
+  color: var(--cor-texto-suave);
+}
+
+/* Listas em grade: 1 coluna no celular, mais colunas na tela grande */
+.numeros,
+.passos,
+.missoes,
+.dispositivos,
+.equipe {
+  display: grid;
+  gap: var(--esp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .numeros,
+  .missoes,
+  .equipe {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .passos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dispositivos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Cards (mesma base para número, passo, missão e dispositivo) */
+.numero,
+.passo,
+.missao,
+.dispositivo {
+  padding: var(--esp-5);
+  background: var(--cor-superficie);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+}
+
+.secao-clara .passo,
+.secao-clara .dispositivo {
+  background: var(--cor-fundo);
+}
+
+.passo h4,
+.missao h3,
+.dispositivo h3 {
+  font-size: var(--fs-lg);
+  margin: 0 0 var(--esp-2);
+}
+
+.passo p,
+.missao p,
+.dispositivo p {
+  margin: 0;
+}
+
+/* O problema */
+.numero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-1);
+}
+
+.numero-valor {
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-3xl);
+  line-height: var(--altura-titulo);
+  color: var(--cor-primaria);
+}
+
+.numero-fonte {
+  font-size: var(--fs-sm);
+  color: var(--cor-texto-suave);
+}
+
+/* Link da fonte com a cor do site (o azul padrão do navegador some no escuro) */
+.numero-fonte a {
+  color: var(--cor-primaria);
+}
+
+.destaque-texto {
+  margin: var(--esp-6) 0 0;
+  font-size: var(--fs-lg);
+  font-weight: var(--peso-forte);
+}
+
+/* Como funciona */
+.passo-numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--toque-min);
+  height: var(--toque-min);
+  margin-bottom: var(--esp-3);
+  border-radius: var(--raio-botao);
+  background: var(--cor-primaria);
+  color: var(--cor-superficie);
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-lg);
+}
+
+/* Componente: alerta (é o único com sombra forte) */
+.card-alerta {
+  max-width: 480px;
+  margin: var(--esp-6) 0 0;
+  padding: var(--esp-5);
+  background: var(--cor-superficie);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-forte);
+}
+
+.card-alerta-titulo {
+  margin: 0 0 var(--esp-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--peso-forte);
+  color: var(--cor-texto-suave);
+}
+
+.card-alerta-texto {
+  margin: var(--esp-3) 0 0;
+  font-size: var(--fs-lg);
+}
+
+/* Componente: selo de risco (sempre cor + palavra) */
+.selo-risco {
+  display: inline-block;
+  padding: var(--esp-1) var(--esp-3);
+  border-radius: var(--raio-campo);
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-sm);
+}
+
+.selo-normal     { background: var(--cor-risco-normal);     color: var(--cor-risco-normal-texto); }
+.selo-atencao    { background: var(--cor-risco-atencao);    color: var(--cor-risco-atencao-texto); }
+.selo-alerta     { background: var(--cor-risco-alerta);     color: var(--cor-risco-alerta-texto); }
+/* O nível se chama PERIGO; o token continua com o nome antigo (tokens.css é compartilhado) */
+.selo-perigo     { background: var(--cor-risco-emergencia); color: var(--cor-risco-emergencia-texto); }
+
+/* Níveis lado a lado (2 no celular, 4 na tela grande), com a regra embaixo do selo */
+.niveis-risco {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--esp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .niveis-risco {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.nivel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--esp-2);
+  padding: var(--esp-4);
+  background: var(--cor-fundo);
+  border-radius: var(--raio-card);
+}
+
+/* Gamificação (único lugar com --cor-destaque) */
+.pontos {
+  display: inline-block;
+  margin-top: var(--esp-3);
+  font-weight: var(--peso-forte);
+  color: var(--cor-destaque);
+}
+
+.ranking {
+  margin-top: var(--esp-6);
+  padding: var(--esp-5);
+  background: var(--cor-superficie);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+}
+
+.ranking h3 {
+  font-size: var(--fs-lg);
+  margin: 0 0 var(--esp-3);
+}
+
+.ranking-lista {
+  margin: 0;
+  padding-left: var(--esp-5);
+}
+
+.ranking-lista li {
+  padding: var(--esp-2) 0;
+}
+
+.ranking-lista .pontos {
+  margin: 0 0 0 var(--esp-2);
+}
+
+.link-app {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  margin-top: var(--esp-4);
+  font-weight: var(--peso-forte);
+  color: var(--cor-primaria);
+}
+
+/* Hardware */
+.dispositivo-itens {
+  margin: var(--esp-3) 0 0;
+  padding-left: var(--esp-5);
+}
+
+/* Fluxo do Sensor ALERA: o que mede → ESP32 → como avisa (slide 16 do PowerPoint) */
+.fluxo-sensor {
+  display: grid;
+  gap: var(--esp-1);
+  margin: var(--esp-3) 0;
+}
+
+.fluxo-titulo {
+  margin: var(--esp-3) 0 var(--esp-1);
+  font-size: var(--fs-md);
+}
+
+.fluxo-grupo .fluxo-titulo {
+  margin-top: 0;
+}
+
+/* Lista compacta: "Nome: descrição" numa linha só, para o card
+   ficar com a mesma altura do Bueiro ALERA */
+.fluxo-lista {
+  display: grid;
+  gap: var(--esp-1);
+  margin: 0;
+  padding-left: var(--esp-5);
+}
+
+.fluxo-lista strong::after {
+  content: ":";
+}
+
+.fluxo-seta {
+  justify-self: center;
+  color: var(--cor-texto-suave);
+  line-height: 1;
+}
+
+/* O ESP32 é o centro do fluxo: bloco escuro como no PowerPoint */
+.fluxo-esp {
+  padding: var(--esp-2) var(--esp-3);
+  background: var(--cor-primaria);
+  color: var(--cor-superficie);
+  border-radius: var(--raio-campo);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+.fluxo-esp strong {
+  font-family: var(--fonte-titulo);
+  font-size: var(--fs-md);
+  margin-right: var(--esp-1);
+}
+
+.limites-sensor {
+  display: grid;
+  gap: var(--esp-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.limites-sensor li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-2);
+}
+
+/* Ilustração do Bueiro ALERA (SVG). Só tokens: muda sozinha no modo escuro.
+   Os números usam o azul da marca, não o laranja do PowerPoint,
+   para não confundir com o nível ALERTA. */
+.ilustracao-bueiro {
+  margin: var(--esp-4) 0 var(--esp-3);
+}
+
+.ilustracao-bueiro svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--fonte-texto);
+}
+
+.ib-rua,
+.ib-galeria     { fill: var(--cor-texto-suave); }
+.ib-grade       { fill: var(--cor-texto); }
+.ib-fenda       { fill: var(--cor-superficie); }
+.ib-caixa       { fill: var(--cor-superficie); stroke: var(--cor-texto); stroke-width: 3; }
+.ib-agua        { fill: color-mix(in srgb, var(--cor-primaria) 22%, var(--cor-superficie)); }
+.ib-cesto       { fill: none; stroke: var(--cor-texto-suave); stroke-width: 2; stroke-dasharray: 6 4; }
+.ib-lixo        { fill: color-mix(in srgb, var(--cor-texto-suave) 45%, var(--cor-superficie)); }
+.ib-sensor      { fill: var(--cor-primaria); }
+.ib-ligacao     { stroke: var(--cor-primaria); stroke-width: 2; stroke-dasharray: 4 4; }
+.ib-fio         { stroke: var(--cor-texto-suave); stroke-width: 1.5; stroke-dasharray: 2 3; }
+.ib-boia        { fill: var(--cor-superficie); stroke: var(--cor-primaria); stroke-width: 3; }
+.ib-esp         { fill: var(--cor-primaria); }
+.ib-whats       { fill: var(--cor-superficie); stroke: var(--cor-primaria); stroke-width: 2; }
+.ib-seta        { stroke: var(--cor-texto-suave); stroke-width: 2; }
+.ib-ponta       { fill: var(--cor-texto-suave); }
+
+.ib-rotulo {
+  fill: var(--cor-texto-suave);
+  font-size: var(--fs-sm);
+}
+
+.ib-esp-texto,
+.ib-esp-sub,
+.ib-whats-texto,
+.ib-whats-sub,
+.ib-numero text {
+  text-anchor: middle;
+}
+
+.ib-esp-texto,
+.ib-whats-texto {
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-md);
+}
+
+.ib-esp-sub,
+.ib-whats-sub {
+  font-size: var(--fs-sm);
+}
+
+.ib-esp-texto,
+.ib-esp-sub     { fill: var(--cor-superficie); }
+.ib-whats-texto,
+.ib-whats-sub   { fill: var(--cor-primaria); }
+
+.ib-numero circle { fill: var(--cor-primaria); stroke: var(--cor-superficie); stroke-width: 2; }
+.ib-numero text {
+  fill: var(--cor-superficie);
+  font-weight: var(--peso-forte);
+  font-size: var(--fs-sm);
+}
+
+.legenda-numerada {
+  margin: 0;
+  padding-left: var(--esp-5);
+}
+
+.legenda-numerada li {
+  padding: var(--esp-1) 0;
+}
+
+/* Quem somos */
+.integrante {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  font-weight: var(--peso-forte);
+}
+
+.integrante-dados {
+  display: flex;
+  flex-direction: column;
+}
+
+.integrante-dados small {
+  font-size: var(--fs-sm);
+  font-weight: var(--peso-texto);
+  color: var(--cor-texto-suave);
+}
+
+.integrante-iniciais {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--toque-min);
+  height: var(--toque-min);
+  border-radius: var(--raio-botao);
+  background: var(--cor-primaria);
+  color: var(--cor-superficie);
+  font-family: var(--fonte-titulo);
+  font-size: var(--fs-sm);
+}
+
+/* Chamada final */
+.chamada-final {
+  text-align: center;
+}
+
+/* Rodapé */
+.rodape {
+  padding: var(--esp-6) 0;
+  background: var(--cor-primaria);
+  color: var(--cor-superficie);
+}
+
+/* Mesma marca do header */
+.rodape-logo {
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-xl);
+  letter-spacing: .04em;
+  margin: 0;
+}
+
+.rodape-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rodape a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
+  color: var(--cor-superficie);
+}
+
+.referencias {
+  margin-top: var(--esp-6);
+}
+
+.referencias h2 {
+  font-size: var(--fs-lg);
+  margin: 0 0 var(--esp-3);
+}
+
+.referencias-lista {
+  display: grid;
+  gap: var(--esp-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+}
+
+/* Links das referências ficam no meio do texto: não viram bloco de 48px */
+.referencias-lista a {
+  display: inline;
+  min-height: 0;
+}
