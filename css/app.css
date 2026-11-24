@@ -137,7 +137,10 @@ body {
   margin: 0 0 var(--esp-4);
 }
 
-/*  Botão  */
+/*  Botão
+    Estados (Sprint 2): default · hover · focus · active · disabled · error.
+    As classes .e-hover, .e-foco e .e-ativo só servem para a vitrine (componentes.html)
+    mostrar o estado parado, com o mesmo CSS do app. */
 .botao {
   display: inline-flex;
   align-items: center;
@@ -153,13 +156,40 @@ body {
   font-weight: var(--peso-forte);
   font-size: var(--fs-md);
   cursor: pointer;
+  box-sizing: border-box; /* Sprint 2: com width: 100%, o padding não estoura a caixa */
 }
-.botao:hover {
+.botao:hover,
+.botao.e-hover {
   background: var(--app-azul-hover);
 }
-.botao:focus-visible {
-  outline: 2px solid transparent; 
+.botao:focus-visible,
+.botao.e-foco {
+  outline: 2px solid transparent;
   box-shadow: var(--app-foco);
+}
+/* Active: enquanto o dedo aperta, o botão afunda um pouco */
+.botao:active,
+.botao.e-ativo {
+  background: var(--app-azul-hover);
+  transform: scale(.97);
+}
+.botao:disabled,
+.botao[aria-disabled="true"] {
+  background: var(--app-linha);
+  color: var(--app-texto-suave);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+/* Error: o formulário tem campo com erro. Some quando a pessoa corrige */
+.botao--erro,
+form:has(:user-invalid) [type="submit"] {
+  background: var(--app-erro);
+  color: #FFFFFF;
+}
+:root:has(#tema:checked) .botao--erro,
+:root:has(#tema:checked) form:has(:user-invalid) [type="submit"] {
+  color: var(--cor-escuro-sobre-azul);
 }
 
 /*  Card de alerta  */
@@ -294,15 +324,56 @@ body {
   color: var(--app-texto);
   font: inherit;
 }
-.campo__entrada:focus-visible {
+/* Estados do campo e da seleção: default · hover · focus · active · disabled · error */
+.campo__entrada:hover:not(:disabled),
+.campo__entrada.e-hover {
+  border-color: var(--app-texto);
+}
+.campo__entrada:focus-visible,
+.campo__entrada.e-foco {
   outline: 2px solid transparent;
   border-color: var(--app-azul);
   box-shadow: var(--app-foco);
 }
+.campo__entrada:active:not(:disabled),
+.campo__entrada.e-ativo {
+  border-color: var(--app-azul);
+  background: var(--app-azul-claro);
+}
+.campo__entrada:disabled {
+  border-style: dashed;
+  background: var(--app-fundo);
+  color: var(--app-texto-suave);
+  cursor: not-allowed;
+}
+/* Área de texto: o mesmo campo, com altura para algumas linhas */
+textarea.campo__entrada {
+  min-height: calc(var(--toque-min) * 2);
+  padding-block: var(--esp-2);
+  resize: vertical;
+}
+/* Seleção (<select>): o mesmo campo, com a setinha desenhada no CSS */
+.selecao {
+  appearance: none;
+  padding-right: var(--esp-7);
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 22px center, right 16px center;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.campo__ajuda {
+  color: var(--app-texto-suave);
+  font-size: var(--fs-sm);
+}
 /* Erro: aparece só depois que a pessoa mexe no campo (:user-invalid) */
 .campo--erro .campo__entrada,
+.campo__entrada[aria-invalid="true"],
 .campo__entrada:user-invalid {
   border-color: var(--app-erro);
+  background: var(--app-superficie);
 }
 .campo__erro {
   display: none;
@@ -311,7 +382,8 @@ body {
   font-weight: var(--peso-forte);
 }
 .campo--erro .campo__erro,
-.campo__entrada:user-invalid + .campo__erro {
+.campo__erro.e-erro,
+.campo__entrada:user-invalid ~ .campo__erro {
   display: block;
 }
 
@@ -427,6 +499,10 @@ body {
   font-weight: var(--peso-forte);
   white-space: nowrap;
 }
+/* Sprint 2: o ciano no azul claro da "sua rua" não passava no contraste (axe); ali os pontos vão na cor do texto */
+.ranking__item--voce .ranking__pontos {
+  color: var(--app-texto);
+}
 
 /*  Rodapé */
 .rodape {
@@ -497,46 +573,23 @@ body {
   box-shadow: inset 0 0 0 3px var(--app-azul);
 }
 
-/* A seção aberta fica com :target, e o :has() leva essa informação até a navegação.
-   Sem nenhuma seção aberta (entrou agora no app), a aba ativa é Alerta. */
-.navegacao__lista::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 25%;
-  height: 3px;
-  background: var(--app-azul);
-  transition: transform .25s ease;
-}
-body:has(#missoes:target)  .navegacao__lista::before { transform: translateX(100%); }
-body:has(#ranking:target)  .navegacao__lista::before { transform: translateX(200%); }
-body:has(#cadastro:target) .navegacao__lista::before { transform: translateX(300%); }
-
-body:not(:has(:target))    .navegacao__link[href="#alerta"],
-body:has(#alerta:target)   .navegacao__link[href="#alerta"],
-body:has(#missoes:target)  .navegacao__link[href="#missoes"],
-body:has(#ranking:target)  .navegacao__link[href="#ranking"],
-body:has(#cadastro:target) .navegacao__link[href="#cadastro"] {
+/* Sprint 2: cada aba é uma página. A aba da página atual tem aria-current="page"
+   (o leitor de tela anuncia "página atual") e ganha a linha azul em cima. */
+.navegacao__link[aria-current="page"] {
   color: var(--app-azul);
   font-weight: var(--peso-forte);
+  box-shadow: inset 0 3px 0 var(--app-azul);
 }
-body:not(:has(:target))    .navegacao__link[href="#alerta"]   .navegacao__icone,
-body:has(#alerta:target)   .navegacao__link[href="#alerta"]   .navegacao__icone,
-body:has(#missoes:target)  .navegacao__link[href="#missoes"]  .navegacao__icone,
-body:has(#ranking:target)  .navegacao__link[href="#ranking"]  .navegacao__icone,
-body:has(#cadastro:target) .navegacao__link[href="#cadastro"] .navegacao__icone {
+.navegacao__link[aria-current="page"] .navegacao__icone {
   stroke-width: 2.5;
 }
-
-/* Menos movimento no celular vê a linha trocar de lugar sem deslizar */
-@media (prefers-reduced-motion: reduce) {
-  .navegacao__lista::before { transition: none; }
+.navegacao__link[aria-current="page"]:focus-visible {
+  box-shadow: inset 0 3px 0 var(--app-azul), inset 0 0 0 3px var(--app-azul);
 }
 
+
 /* ---------- Tela de rota segura ----------
-   Fica escondida até o link #rota ser tocado; aí cobre a tela toda (:target, sem JavaScript).
-   "Voltar" leva pra #alerta, o que fecha a tela. */
+   Sprint 2: página própria (app/rota.html). "Voltar" leva para o alerta (app/index.html). */
 a.botao {
   text-decoration: none;
 }
@@ -553,26 +606,8 @@ a.botao {
   box-shadow: inset 0 0 0 2px var(--app-azul), var(--app-foco);
 }
 
-.rota {
-  display: none;
-}
-.rota:target {
-  display: block;
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  overflow-y: auto;
-  background: var(--app-fundo);
-}
-.rota:focus {
-  outline: none; /* recebe o foco ao abrir só pra o leitor de tela começar daqui */
-}
-body:has(#rota:target) {
-  overflow: hidden; /* a página de trás não rola junto */
-}
-body:has(#rota:target) .navegacao {
-  display: none;
-}
+/* Sprint 2: a rota virou página própria (rota.html). O topo com "Voltar" é reaproveitado
+   nas telas de uma tarefa só: rota, missão e confirmação do alerta. */
 
 .rota__topo {
   position: sticky;
@@ -793,9 +828,408 @@ body:has(#rota:target) .navegacao {
   width: 100%;
 }
 
+/* =====================================================================
+   SPRINT 2 · telas dos 3 fluxos e estados dos componentes
+   ===================================================================== */
+
+/* Link "Pular para o conteúdo": primeiro Tab da página, só aparece com o foco */
+.pular {
+  position: absolute;
+  top: var(--esp-2);
+  left: var(--esp-2);
+  z-index: 30;
+  padding: var(--esp-2) var(--esp-4);
+  border-radius: var(--raio-campo);
+  background: var(--app-superficie);
+  color: var(--app-azul);
+  font-weight: var(--peso-forte);
+  transform: translateY(-200%);
+}
+.pular:focus-visible {
+  transform: none;
+  outline: 2px solid transparent;
+  box-shadow: var(--app-foco);
+}
+
+/* A marca do topo é um link para o início */
+a.topo__marca {
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--raio-campo);
+}
+a.topo__marca:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px var(--app-topo-texto);
+}
+.secao__titulo--afastado { margin-top: var(--esp-6); }
+.tela-apoio--afastado { margin-top: var(--esp-4); }
+.acoes--junto { margin-top: 0; }
+.missao__pontos--solto {
+  display: inline-block;
+  margin: 0 0 var(--esp-2);
+}
+
+/* Título e texto de abertura de cada tela */
+.tela-titulo {
+  margin: 0 0 var(--esp-2);
+  font-size: var(--fs-2xl);
+}
+.tela-apoio {
+  margin: 0 0 var(--esp-5);
+  color: var(--app-texto-suave);
+}
+
+/* Grupo de botões: empilhados no celular, lado a lado em tela maior */
+.acoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+  margin-top: var(--esp-5);
+}
+
+/* Caixa de um formulário (cadastro, comprovação, confirmação do alerta) */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+  padding: var(--esp-5);
+  background: var(--app-superficie);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+}
+.formulario__titulo {
+  margin: 0;
+  font-size: var(--fs-xl);
+}
+.formulario fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.formulario legend {
+  margin-bottom: var(--esp-3);
+  padding: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-lg);
+}
+.formulario .botao {
+  align-self: flex-start;
+}
+
+/* Campo de foto: o input de arquivo com o visual do campo */
+input[type="file"].campo__entrada {
+  padding: var(--esp-2) var(--esp-3);
+  cursor: pointer;
+}
+input[type="file"].campo__entrada::file-selector-button {
+  margin-right: var(--esp-3);
+  padding: var(--esp-2) var(--esp-4);
+  border: 0;
+  border-radius: var(--raio-botao);
+  background: var(--app-azul);
+  color: var(--app-sobre-azul);
+  font: inherit;
+  font-weight: var(--peso-forte);
+  cursor: pointer;
+}
+
+/* Caixa de marcar (confirmação da Defesa Civil) */
+.marcar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--esp-3);
+  min-height: var(--toque-min);
+  font-weight: var(--peso-forte);
+  cursor: pointer;
+}
+.marcar input {
+  flex-shrink: 0;
+  width: var(--esp-5);
+  height: var(--esp-5);
+  margin: 0;
+  accent-color: var(--app-azul);
+}
+.marcar input:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: var(--app-foco);
+}
+.marcar:has(input:user-invalid) {
+  color: var(--app-erro);
+}
+
+/* ---------- Card de abrigo (seleção de abrigo na rota) ----------
+   Cada abrigo é um rádio dentro de um cartão: o cartão inteiro é clicável.
+   Estados: default · hover · focus · active (escolhido) · disabled (fechado) · error */
+.abrigos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+}
+.abrigo {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--esp-1) var(--esp-3);
+  padding: var(--esp-4);
+  background: var(--app-superficie);
+  border: 2px solid var(--app-linha);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.abrigo input {
+  grid-row: span 2;
+  width: var(--esp-5);
+  height: var(--esp-5);
+  margin: 0;
+  accent-color: var(--app-azul);
+}
+.abrigo__nome {
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-md);
+}
+.abrigo__info {
+  grid-column: 2;
+  color: var(--app-texto-suave);
+  font-size: var(--fs-sm);
+}
+.abrigo:hover:not(:has(:disabled)),
+.abrigo.e-hover {
+  border-color: var(--app-borda);
+}
+.abrigo:has(input:focus-visible),
+.abrigo.e-foco {
+  border-color: var(--app-azul);
+  box-shadow: var(--app-foco);
+}
+.abrigo input:focus-visible {
+  outline: 2px solid transparent;
+}
+/* Active: o abrigo escolhido fica azul claro com borda azul */
+.abrigo:has(input:checked),
+.abrigo.e-ativo {
+  border-color: var(--app-azul);
+  background: var(--app-azul-claro);
+}
+.abrigo:active:not(:has(:disabled)) {
+  transform: scale(.99);
+}
+.abrigo:has(input:disabled) {
+  border-style: dashed;
+  background: var(--app-fundo);
+  box-shadow: none;
+  color: var(--app-texto-suave);
+  cursor: not-allowed;
+}
+/* Error: tentou salvar sem escolher. :user-invalid só liga depois da tentativa */
+.abrigos:has(input:user-invalid) .abrigo:not(:has(:disabled)),
+.abrigo.e-erro {
+  border-color: var(--app-erro);
+}
+.abrigos__erro {
+  display: none;
+  margin: 0;
+  color: var(--app-erro);
+  font-size: var(--fs-sm);
+  font-weight: var(--peso-forte);
+}
+.abrigos:has(input:user-invalid) + .abrigos__erro,
+.abrigos__erro.e-erro {
+  display: block;
+}
+
+/* ---------- Card de alerta (componente composto) ----------
+   Faixa do nível + rua e hora + orientação + abrigo + botão.
+   Estados: default · hover · focus (no botão de dentro) · active · disabled (sem dados) · error */
+.alerta {
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.alerta:not(.alerta--compacto):hover,
+.alerta.e-hover {
+  box-shadow: 0 12px 32px rgb(20 32 43 / .24);
+}
+.alerta:not(.alerta--compacto):focus-within,
+.alerta.e-foco {
+  box-shadow: var(--sombra-forte), var(--app-foco);
+}
+.alerta:not(.alerta--compacto):active,
+.alerta.e-ativo {
+  transform: scale(.99);
+}
+/* Disabled: sem dados da rua (sem internet). Faixa cinza, nada de cor de risco */
+.alerta--sem-dados .alerta__faixa {
+  background: var(--app-linha);
+  color: var(--app-texto-suave);
+}
+.alerta--sem-dados .alerta__corpo {
+  color: var(--app-texto-suave);
+}
+/* Error: não deu para atualizar o alerta */
+.alerta--falha {
+  box-shadow: inset 0 0 0 2px var(--app-erro), var(--sombra-card);
+}
+.alerta--falha .alerta__faixa {
+  background: var(--app-superficie);
+  color: var(--app-erro);
+  border-bottom: 2px solid var(--app-erro);
+}
+
+/* ---------- Card de missão como link (o cartão inteiro leva para a missão) ---------- */
+.missao__link {
+  color: inherit;
+  text-decoration: none;
+}
+.missao__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--raio-card);
+}
+.missao--link {
+  position: relative;
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.missao--link:hover {
+  box-shadow: var(--sombra-forte);
+}
+.missao--link:has(.missao__link:focus-visible) {
+  box-shadow: var(--app-foco);
+}
+.missao__link:focus-visible {
+  outline: 2px solid transparent;
+}
+.missao--link:active {
+  transform: scale(.99);
+}
+.missao--bloqueada {
+  background: var(--app-fundo);
+  box-shadow: none;
+  border: 2px dashed var(--app-linha);
+}
+.missao__status {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--peso-forte);
+  color: var(--app-azul);
+}
+
+/* ---------- Tela de confirmação (cadastro feito, abrigo salvo, missão enviada, alerta disparado) ---------- */
+.confirmacao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--esp-3);
+}
+.confirmacao__icone {
+  display: grid;
+  place-items: center;
+  width: var(--esp-8);
+  height: var(--esp-8);
+  border-radius: var(--raio-botao);
+  background: var(--cor-risco-normal);
+  color: var(--cor-risco-normal-texto);
+}
+.confirmacao__icone svg {
+  width: var(--esp-6);
+  height: var(--esp-6);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.confirmacao .tela-titulo,
+.confirmacao .tela-apoio {
+  margin: 0;
+}
+.pontos-ganhos {
+  margin: 0;
+  color: var(--app-destaque);
+  font-family: var(--fonte-titulo);
+  font-weight: var(--peso-titulo);
+  font-size: var(--fs-2xl);
+}
+.previa {
+  width: 100%;
+  margin-top: var(--esp-3);
+}
+.previa__rotulo {
+  margin: 0 0 var(--esp-2);
+  color: var(--app-texto-suave);
+  font-size: var(--fs-sm);
+  font-weight: var(--peso-forte);
+}
+
+/* ---------- Painel da Defesa Civil ---------- */
+.tabela-caixa {
+  overflow-x: auto;
+  background: var(--app-superficie);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+}
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tabela caption {
+  padding: var(--esp-4) var(--esp-4) 0;
+  color: var(--app-texto-suave);
+  font-size: var(--fs-sm);
+  text-align: left;
+}
+.tabela th,
+.tabela td {
+  padding: var(--esp-3) var(--esp-4);
+  border-bottom: 1px solid var(--app-linha);
+  text-align: left;
+  white-space: nowrap;
+}
+.tabela thead th {
+  color: var(--app-texto-suave);
+  font-size: var(--fs-sm);
+}
+.tabela tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+/* Vitrine de componentes (componentes.html) */
+.estados {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: var(--esp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.estado {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+  padding: var(--esp-4);
+  border: 1px dashed var(--app-borda);
+  border-radius: var(--raio-card);
+}
+.estado__nome {
+  margin: 0;
+  color: var(--app-texto-suave);
+  font-family: var(--fonte-texto);
+  font-size: var(--fs-sm);
+  font-weight: var(--peso-forte);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.estado .botao {
+  width: 100%;
+}
+
 /* ---------- Telas maiores ---------- */
 @media (min-width: 600px) {
   .botao { width: auto; }
+  .acoes { flex-direction: row; flex-wrap: wrap; }
   .grade { grid-template-columns: repeat(2, 1fr); }
 }
 @media (min-width: 900px) {
